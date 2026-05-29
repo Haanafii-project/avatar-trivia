@@ -1,27 +1,69 @@
+import React from "react";
 import { getTriviaQuestions } from "@/services/api";
 import TriviaGame from "@/components/TriviaGame";
+import { Button, Space, Typography } from "antd";
+// 1. Import type yang barusan kamu buat
+import { TriviaQuestion } from "@/types/trivia";
+
+const { Title, Paragraph } = Typography;
 
 export default async function Home() {
-  const allQuestions = await getTriviaQuestions();
+  // 2. Gunakan tipe TriviaQuestion[] di sini
+  let validQuestions: TriviaQuestion[] = [];
 
-  const validQuestions = allQuestions
-    .filter((q) => q.question && q.possibleAnsers && q.correctAnswer)
-    .sort(() => 0.5 - Math.random())
-    .slice(0, 10);
+  try {
+    const allQuestions = await getTriviaQuestions();
+
+    // 3. Lakukan casting (as TriviaQuestion[]) agar TypeScript tahu tipe data dari API
+    validQuestions = (allQuestions as TriviaQuestion[])
+      .filter((q) => q.question && q.possibleAnsers && q.correctAnswer)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 10);
+  } catch (error) {
+    console.error("Gagal memuat pertanyaan kuis:", error);
+  }
 
   return (
-    <main className="min-h-screen w-full bg-slate-50 text-slate-900 font-sans antialiased flex flex-col items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-2xl mb-6 text-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
-          Avatar Trivia
-        </h1>
+    <main className="flex flex-col p-4 md:p-8">
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-bold text-slate-900">Avatar Trivia</h1>
         <p className="text-sm text-slate-500 mt-1">
           Uji pengetahuan elemenmu dengan standar modern
         </p>
       </div>
 
-      <div className="w-full max-w-2xl">
-        <TriviaGame questions={validQuestions} />
+      <div
+        style={{
+          padding: "20px",
+          maxWidth: "800px",
+          margin: "0 auto",
+          textAlign: "center",
+        }}
+      >
+        <Title level={2}>Halo Ant Design! 🚀</Title>
+        <Paragraph>
+          Ant Design berhasil diintegrasikan dengan Next.js App Router
+          menggunakan SSR Registry.
+        </Paragraph>
+
+        <Space size="middle">
+          <Button type="primary">Tombol Utama</Button>
+          <Button>Tombol Biasa</Button>
+          <Button type="dashed">Tombol Dashed</Button>
+          <Button type="primary" danger>
+            Tombol Bahaya
+          </Button>
+        </Space>
+      </div>
+
+      <div className="w-full mt-6">
+        {validQuestions.length > 0 ? (
+          <TriviaGame questions={validQuestions} />
+        ) : (
+          <p className="text-center text-red-500">
+            Gagal memuat soal kuis. Silakan coba lagi.
+          </p>
+        )}
       </div>
     </main>
   );
