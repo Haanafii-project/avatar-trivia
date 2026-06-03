@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { TriviaQuestion } from "@/types/trivia";
+import { Card, Space, Button } from "antd";
 
 interface TriviaGameProps {
   questions: TriviaQuestion[];
 }
 
-export default function TriviaGame({ questions }: TriviaGameProps) {
+export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [score, setScore] = useState(0);
@@ -21,18 +22,12 @@ export default function TriviaGame({ questions }: TriviaGameProps) {
     setSelectedAnswer(answer);
 
     if (answer === currentQuestion.correctAnswer) {
-      alert("Jawaban Benar");
       setScore((prev) => prev + 1);
-    } else {
-      alert("Jawaban Salah");
     }
   };
 
   const handleNext = () => {
-    if (!selectedAnswer) {
-      alert("Harus pilih jawaban terlebih dahulu!");
-      return;
-    }
+    if (!selectedAnswer) return;
 
     setSelectedAnswer(null);
 
@@ -43,19 +38,11 @@ export default function TriviaGame({ questions }: TriviaGameProps) {
     }
   };
 
-  const restartGame = () => {
-    setCurrentIndex(0);
-    setSelectedAnswer(null);
-    setScore(0);
-    setIsFinished(false);
-  };
-
   return (
-    <div className="flex flex-col">
-      <div>
-        <h1>Hello World</h1>
-        <h1>Hellow World</h1>
-      </div>
-    </div>
+    <Card title="Avatar Trivia">
+      <Space orientation="vertical">
+        <Button type="primary">Mulai Quiz</Button>
+      </Space>
+    </Card>
   );
-}
+};
