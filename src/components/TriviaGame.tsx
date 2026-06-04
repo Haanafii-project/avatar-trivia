@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, Typography, Button, Space, Progress, Modal, Result } from "antd";
-
 import { TriviaQuestion } from "@/types/trivia";
+import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 
@@ -15,8 +15,9 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [score, setScore] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [isSummaryModalOpen, setIsSummaryModalOpen] = useState(false);
+
+  const router = useRouter();
 
   if (!questions || questions.length === 0) {
     return (
@@ -39,30 +40,53 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const handleNext = () => {
     if (!selectedAnswer) return;
 
-    const correct = selectedAnswer === cleanCorrectAnswer;
-    setIsCorrect(correct);
+    const isCorrect = selectedAnswer === cleanCorrectAnswer;
 
-    if (correct) {
+    if (isCorrect) {
       setScore((prev) => prev + 1);
     }
 
-    setIsModalOpen(true);
-  };
-
-  useEffect(() => {
-    console.log("selectedAnswer changed:", selectedAnswer);
-  }, [selectedAnswer]);
-
-  const handleModalOk = () => {
-    setIsModalOpen(false);
-    setSelectedAnswer(null); // Reset untuk soal berikutnya
+    setSelectedAnswer(null);
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      alert(`Game Selesai! Skor kamu: ${score}/${questions.length}`);
+      setIsSummaryModalOpen(true);
     }
   };
+
+  const handleRestartGame = () => {
+    setIsSummaryModalOpen(false);
+    setCurrentIndex(0);
+    setScore(0);
+    router.refresh();
+  };
+
+  const getEvaluationData = () => {
+    const percentage = (score / questions.length) * 100;
+
+    if (percentage >= 90) {
+      return {
+        status: "success" as const,
+        title: "Selamat! Kamu adalah Avatar Sejati!",
+        subTitle: `Skor Kamu: ${score}/${questions.length}. Penguasaan empat elemenmu sempurna, jagat raya aman bersamamu!`,
+      };
+    } else if (percentage >= 60) {
+      return {
+        status: "info" as const,
+        title: "Pengendali Elemen Tangguh!",
+        subTitle: `Skor Kamu: ${score}/${questions.length}. Kemampuanmu sudah hebat, sedikit lagi latihan kamu bisa menyamai Avatar Master.`,
+      };
+    } else {
+      return {
+        status: "error" as const,
+        title: "Belajar Lagi di Kuil Udara",
+        subTitle: `Skor Kamu: ${score}/${questions.length}. Jangan menyerah! Mintalah bimbingan Paman Iroh atau berlatihlah kembali bersama Zuko.`,
+      };
+    }
+  };
+
+  const evaluation = getEvaluationData();
 
   return (
     <Card style={{ maxWidth: 800, margin: "0 auto" }}>
@@ -77,8 +101,6 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
 
         <Title level={4}>{cleanQuestionText}</Title>
 
-        {/* LIST JAWABAN PAKAI TAG HTML MURNI YANG DI-STYLING (ANTI REWEL) */}
-        {/* LIST JAWABAN YANG SUDAH DI-FIX AGAR STATE LANGSUNG TERISI */}
         <div
           style={{
             display: "flex",
@@ -148,42 +170,40 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
           })}
         </div>
 
-        <div style={{ width: "100%", textAlign: "left" }}>
-          <Text type="secondary">
-            Pilihan saat ini: {selectedAnswer ?? "—"}
-          </Text>
-        </div>
-
-        {/* BUTTON MURNI SUPAYA SYNC DENGAN STATE JAWABAN */}
-        {/* GANTI TOMBOL LAMA KAMU DENGAN INI */}
         <Button
           type="primary"
           onClick={handleNext}
-          disabled={!selectedAnswer} // Menggunakan logika asli yang simpel
+          disabled={!selectedAnswer}
           style={{
             width: "100%",
             height: "40px",
             fontSize: "16px",
           }}
         >
-          Selanjutnya
+          {currentIndex === questions.length - 1 ? "Selesai" : "Selanjutnya"}
         </Button>
 
         <Modal
-          open={isModalOpen}
-          onOk={handleModalOk}
+          open={isSummaryModalOpen}
           closable={false}
-          cancelButtonProps={{ style: { display: "none" } }}
-          okText="Lanjut"
+          footer={null}
+          centered
         >
           <Result
-            status={isCorrect ? "success" : "error"}
-            title={isCorrect ? "Jawaban Benar!" : "Jawaban Salah!"}
-            subTitle={
-              isCorrect
-                ? "Mantap!"
-                : `Jawaban yang benar adalah: ${cleanCorrectAnswer}`
-            }
+            status={evaluation.status}
+            title={evaluation.title}
+            subTitle={evaluation.subTitle}
+            extra={[
+              <Button
+                type="primary"
+                key="restart"
+                size="large"
+                onClick={handleRestartGame}
+                style={{ width: "100%", height: "45px", fontSize: "16px" }}
+              >
+                Main Lagi
+              </Button>,
+            ]}
           />
         </Modal>
       </Space>
