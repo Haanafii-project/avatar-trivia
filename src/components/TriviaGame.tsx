@@ -130,7 +130,11 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
                   alignItems: "center",
                   gap: "12px",
                   padding: "12px 16px",
+
+                  // --- PERBAIKAN BUG LEBAR DI SINI ---
                   width: "100%",
+                  boxSizing: "border-box", // Menjamin padding dihitung di dalam width, gak bakal jebol lagi
+
                   border: isSelected
                     ? "2px solid #1677ff"
                     : "1px solid #d9d9d9",
@@ -142,6 +146,7 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
                   userSelect: "none",
                 }}
               >
+                {/* ... sisa kode elemen lingkaran dan teks di dalamnya tetap sama ... */}
                 <span
                   style={{
                     display: "inline-flex",
