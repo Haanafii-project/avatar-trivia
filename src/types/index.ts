@@ -4,3 +4,9 @@ export type TriviaQuestion = {
   possibleAnsers: string[];
   correctAnswer: string;
 };
+
+export type CharacterAPI = {
+  id: number;
+  name: string;
+  image: string;
+};

@@ -16,6 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id">
+      <head>
+        <meta name="referrer" content="no-referrer" />
+      </head>
       <body>
         <AntdRegistry>
           <div style={{ minHeight: "100vh", backgroundColor: "#f5f5f5" }}>

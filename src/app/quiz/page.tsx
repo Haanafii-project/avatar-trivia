@@ -1,6 +1,6 @@
 import { TriviaGame } from "@/components/TriviaGame";
 import { getTriviaQuestions } from "@/services/api";
-import { TriviaQuestion } from "@/types/trivia";
+import { TriviaQuestion } from "@/types";
 
 function shuffleQuestions(array: TriviaQuestion[]): TriviaQuestion[] {
   const shuffled = [...array];

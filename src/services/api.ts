@@ -1,11 +1,24 @@
-import { TriviaQuestion } from "@/types/trivia";
+import { TriviaQuestion } from "@/types";
+import { CharacterAPI } from "@/types";
 
 export const getTriviaQuestions = async (): Promise<TriviaQuestion[]> => {
-  const res = await fetch("https://api.sampleapis.com/avatar/questions");
+  const apiUrl = await fetch(process.env.NEXT_PUBLIC_AVATAR_TRIVIA_API || "");
 
-  if (!res.ok) {
+  if (!apiUrl.ok) {
     throw new Error("Gagal mengambil data trivia dari API");
   }
 
-  return res.json();
+  return apiUrl.json();
+};
+
+export const getAvatarCharacters = async (): Promise<CharacterAPI[]> => {
+  const apiUrl = await fetch(
+    process.env.NEXT_PUBLIC_AVATAR_CHARACTERS_API || "",
+  );
+
+  if (!apiUrl.ok) {
+    throw new Error("Gagal mengambil data kerakter dari API");
+  }
+
+  return apiUrl.json();
 };

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, Typography, Button, Space, Progress, Modal, Result } from "antd";
-import { TriviaQuestion } from "@/types/trivia";
+import { TriviaQuestion } from "@/types";
 import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
