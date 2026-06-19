@@ -28,7 +28,7 @@ NEXT_PUBLIC_AVATAR_CHARACTERS_API=https://api.sampleapis.com/avatar/characters
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) dengan browser untuk melihat aplikasi.
+Open [http://localhost:3000](http://localhost:3000)
 
 ## Project Structure
 

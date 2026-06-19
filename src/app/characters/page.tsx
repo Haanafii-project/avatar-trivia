@@ -57,7 +57,7 @@ export default function CharactersPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
           gap: "30px",
           justifyItems: "center",
         }}

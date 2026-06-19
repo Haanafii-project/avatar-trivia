@@ -28,7 +28,7 @@ export const CharacterCard = ({ name, bio, image }: CharacterCardProps) => {
           referrerPolicy="no-referrer"
           style={{
             width: "100%",
-            height: "380px",
+            height: "280px",
             objectFit: "cover",
           }}
         />
