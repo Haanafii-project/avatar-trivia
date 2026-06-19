@@ -1,6 +1,7 @@
 import { TriviaGame } from "@/components/TriviaGame";
 import { getTriviaQuestions } from "@/services/api";
 import { TriviaQuestion } from "@/types";
+import { QUIZ_CONFIG, SIZING, SPACING } from "@/lib/constants";
 
 function shuffleQuestions(array: TriviaQuestion[]): TriviaQuestion[] {
   const shuffled = [...array];
@@ -18,14 +19,14 @@ export default async function QuizPage() {
   try {
     const allQuestions = await getTriviaQuestions();
     const shuffledQuestions = shuffleQuestions(allQuestions);
-    selectedQuestions = shuffledQuestions.slice(0, 10);
+    selectedQuestions = shuffledQuestions.slice(0, QUIZ_CONFIG.QUESTIONS_PER_QUIZ);
   } catch {
     isError = true;
   }
 
   if (isError) {
     return (
-      <div style={{ maxWidth: 800, margin: "40px auto", textAlign: "center" }}>
+      <div style={{ maxWidth: SIZING.CONTAINER_MAX_WIDTH, margin: `${SPACING.LARGE} auto`, textAlign: "center" }}>
         <h2>Waduh, Gagal Memuat Kuis!</h2>
         <p style={{ color: "#8c8c8c" }}>
           Ada masalah saat mengambil data dari dunia roh. Silakan coba segarkan

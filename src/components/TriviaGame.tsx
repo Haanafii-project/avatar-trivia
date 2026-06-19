@@ -4,6 +4,15 @@ import { useState } from "react";
 import { Card, Typography, Button, Space, Progress, Modal, Result } from "antd";
 import { TriviaQuestion } from "@/types";
 import { useRouter } from "next/navigation";
+import {
+  SCORE_THRESHOLDS,
+  TEXT_PATTERNS,
+  SIZING,
+  SPACING,
+  COLORS,
+  TRANSITIONS,
+  TYPOGRAPHY,
+} from "@/lib/constants";
 
 const { Title, Text } = Typography;
 
@@ -21,7 +30,7 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
 
   if (!questions || questions.length === 0) {
     return (
-      <Card style={{ maxWidth: 800, margin: "0 auto" }}>
+      <Card style={{ maxWidth: SIZING.CONTAINER_MAX_WIDTH, margin: "0 auto" }}>
         Data soal kosong...
       </Card>
     );
@@ -31,10 +40,10 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   const cleanQuestionText = currentQuestion.question
-    ?.replace(/^"|"$/g, "")
+    ?.replace(TEXT_PATTERNS.QUOTE_CLEANUP, "")
     .trim();
   const cleanCorrectAnswer = currentQuestion.correctAnswer
-    ?.replace(/^"|"$/g, "")
+    ?.replace(TEXT_PATTERNS.QUOTE_CLEANUP, "")
     .trim();
 
   const handleNext = () => {
@@ -65,13 +74,13 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const getEvaluationData = () => {
     const percentage = (score / questions.length) * 100;
 
-    if (percentage >= 90) {
+    if (percentage >= SCORE_THRESHOLDS.EXCELLENT) {
       return {
         status: "success" as const,
         title: "Selamat! Kamu adalah Avatar Sejati!",
         subTitle: `Skor Kamu: ${score}/${questions.length}. Penguasaan empat elemenmu sempurna, jagat raya aman bersamamu!`,
       };
-    } else if (percentage >= 60) {
+    } else if (percentage >= SCORE_THRESHOLDS.GOOD) {
       return {
         status: "info" as const,
         title: "Pengendali Elemen Tangguh!",
@@ -89,7 +98,7 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
   const evaluation = getEvaluationData();
 
   return (
-    <Card style={{ maxWidth: 800, margin: "0 auto" }}>
+    <Card style={{ maxWidth: SIZING.CONTAINER_MAX_WIDTH, margin: "0 auto" }}>
       <Space orientation="vertical" size="large" style={{ width: "100%" }}>
         <div>
           <Title level={3}>Avatar Trivia</Title>
@@ -105,12 +114,12 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "12px",
+            gap: SPACING.SMALL,
             width: "100%",
           }}
         >
           {currentQuestion.possibleAnsers?.map((answer, i) => {
-            const cleanAnswer = answer?.replace(/^"|"$/g, "").trim();
+            const cleanAnswer = answer?.replace(TEXT_PATTERNS.QUOTE_CLEANUP, "").trim();
             const isSelected = selectedAnswer === cleanAnswer;
 
             return (
@@ -128,43 +137,43 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "12px",
-                  padding: "12px 16px",
+                  gap: SPACING.SMALL,
+                  padding: `${SPACING.SMALL} 16px`,
 
-                  // --- PERBAIKAN BUG LEBAR DI SINI ---
                   width: "100%",
-                  boxSizing: "border-box", // Menjamin padding dihitung di dalam width, gak bakal jebol lagi
+                  boxSizing: "border-box",
 
                   border: isSelected
-                    ? "2px solid #1677ff"
-                    : "1px solid #d9d9d9",
-                  borderRadius: "8px",
-                  backgroundColor: isSelected ? "#e6f4ff" : "#ffffff",
+                    ? `2px solid ${COLORS.PRIMARY}`
+                    : `1px solid ${COLORS.BORDER_DEFAULT}`,
+                  borderRadius: SIZING.BORDER_RADIUS_MEDIUM,
+                  backgroundColor: isSelected
+                    ? COLORS.BACKGROUND_SELECTED
+                    : "#ffffff",
                   cursor: "pointer",
-                  transition: "all 0.2s",
+                  transition: TRANSITIONS.SMOOTH,
                   textAlign: "left",
                   userSelect: "none",
                 }}
               >
-                {/* ... sisa kode elemen lingkaran dan teks di dalamnya tetap sama ... */}
                 <span
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
+                    width: SIZING.RADIO_SIZE,
+                    height: SIZING.RADIO_SIZE,
+                    borderRadius: SIZING.BORDER_RADIUS_CIRCLE,
                     border: isSelected
-                      ? "6px solid #1677ff"
+                      ? `6px solid ${COLORS.PRIMARY}`
                       : "1px solid rgba(0,0,0,0.25)",
                     flexShrink: 0,
                   }}
                 />
                 <span
                   style={{
-                    fontSize: "16px",
-                    color: isSelected ? "#1677ff" : "rgba(0,0,0,0.88)",
+                    fontSize: TYPOGRAPHY.BASE_FONT_SIZE,
+                    color: isSelected ? COLORS.PRIMARY : "rgba(0,0,0,0.88)",
                     fontWeight: isSelected ? 500 : 400,
                   }}
                 >
@@ -181,8 +190,8 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
           disabled={!selectedAnswer}
           style={{
             width: "100%",
-            height: "40px",
-            fontSize: "16px",
+            height: SIZING.BUTTON_HEIGHT,
+            fontSize: TYPOGRAPHY.BASE_FONT_SIZE,
           }}
         >
           {currentIndex === questions.length - 1 ? "Selesai" : "Selanjutnya"}
@@ -204,7 +213,7 @@ export const TriviaGame = ({ questions }: TriviaGameProps) => {
                 key="restart"
                 size="large"
                 onClick={handleRestartGame}
-                style={{ width: "100%", height: "45px", fontSize: "16px" }}
+                style={{ width: "100%", height: "45px", fontSize: TYPOGRAPHY.BASE_FONT_SIZE }}
               >
                 Main Lagi
               </Button>,
